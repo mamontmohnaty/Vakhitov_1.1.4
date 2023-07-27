@@ -3,21 +3,17 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.util.Util;
 import jm.task.core.jdbc.model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl extends Util implements UserDao {
     public UserDaoJDBCImpl() {
 
     }
-
     Connection connection = getConnection();
 
     public void createUsersTable() {
-
-
 
     }
     public void dropUsersTable() {
@@ -26,17 +22,13 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
 
-
-        PreparedStatement preparedStatement = null;
-
         String sql = "INSERT INTO UsersTable (id, name, lastname, age) VALUES(?, ?, ?, ?)";
 
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(2, name);
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setByte(2, age);
+            preparedStatement.setString(3, lastName);
+            preparedStatement.setByte(4, age);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -47,10 +39,40 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void removeUserById(long id) {
 
+        String sql = "DELETE * FROM UsersTable WHERE id=?";
+
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql))
+        {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<User> getAllUsers() {
-        return null;
+
+        List<User> userList = new ArrayList<>();
+
+        String sql = "SELECT * FROM UsersTable";
+
+        try(Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql))
+        {
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getLong("id"));
+                user.setName(resultSet.getString("name"));
+                user.setLastName(resultSet.getString("lastname"));
+                user.setAge(resultSet.getByte("age"));
+
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userList;
     }
 
     public void cleanUsersTable() {
