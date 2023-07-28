@@ -14,7 +14,6 @@ public class Main {
         userService.createUsersTable();
 
         userService.saveUser("Ivan", "Ivanov", (byte) 18);
-        System.out.println("User с именем – " + userService. + " добавлен в базу данных");
         userService.saveUser("Sidor", "Sidorov", (byte) 19);
         userService.saveUser("Petr", "Petrov", (byte) 20);
         userService.saveUser("Alexandr", "Smirnov", (byte) 21);
