@@ -11,7 +11,8 @@ public class Util {
     private static final String db_username = "bestuser";
     private static final String db_password = "bestuser";
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
+
         Connection connection = null;
         try {
             Class.forName(db_driver);

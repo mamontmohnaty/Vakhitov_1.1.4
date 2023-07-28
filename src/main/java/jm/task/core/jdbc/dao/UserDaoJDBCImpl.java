@@ -7,22 +7,45 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
+public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
 
     }
-    Connection connection = getConnection();
+    Connection connection = Util.getConnection();
 
     public void createUsersTable() {
 
+        String sql = "CREATE TABLE IF NOT EXISTS `UsersTable` (\n" +
+                "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
+                "  `name` VARCHAR(20) NOT NULL,\n" +
+                "  `lastName` VARCHAR(30) NOT NULL,\n" +
+                "  `age` INT NOT NULL,\n" +
+                "  PRIMARY KEY (`id`))";
+
+        try(Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(sql);
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     public void dropUsersTable() {
 
+        String sql = "DROP TABLE IF EXISTS UsersTable";
+
+        try(Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(sql);
+
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveUser(String name, String lastName, byte age) {
 
-        String sql = "INSERT INTO UsersTable (id, name, lastname, age) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO UsersTable (name, lastname, age) VALUES(?, ?, ?)";
 
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
@@ -34,7 +57,6 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void removeUserById(long id) {
@@ -77,5 +99,14 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void cleanUsersTable() {
 
+        String sql = "TRUNCATE UsersTable";
+
+        try(Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(sql);
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
