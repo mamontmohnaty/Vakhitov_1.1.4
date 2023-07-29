@@ -49,12 +49,12 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, lastName);
-            preparedStatement.setByte(4, age);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setByte(3, age);
 
             preparedStatement.executeUpdate();
-            System.out.println("User с именем – " + name + "добавлен в базу данных");
+            System.out.println("User with name - " + name + " has been added to the db_kata_study");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,6 +82,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try(Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql))
+
         {
             while (resultSet.next()) {
                 User user = new User();
@@ -91,6 +92,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setAge(resultSet.getByte("age"));
 
                 userList.add(user);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
